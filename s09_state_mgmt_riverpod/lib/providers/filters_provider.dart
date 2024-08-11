@@ -9,15 +9,7 @@ enum Filter {
   vegan,
 }
 
-class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
-  FiltersNotifier()
-      : super({
-          Filter.glutenFree: false,
-          Filter.lactoseFree: false,
-          Filter.vegetarian: false,
-          Filter.vegan: false,
-        });
-
+class FiltersNotifier extends Notifier<Map<Filter, bool>> {
   void setFilter(Filter filter, bool isActive) {
     state = {
       ...state,
@@ -28,10 +20,20 @@ class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
   void setFilters(Map<Filter, bool> filters) {
     state = filters;
   }
+
+  @override
+  Map<Filter, bool> build() {
+    return {
+      Filter.glutenFree: false,
+      Filter.lactoseFree: false,
+      Filter.vegetarian: false,
+      Filter.vegan: false,
+    };
+  }
 }
 
 final filtersProvider =
-    StateNotifierProvider<FiltersNotifier, Map<Filter, bool>>((ref) {
+    NotifierProvider<FiltersNotifier, Map<Filter, bool>>(() {
   return FiltersNotifier();
 });
 
