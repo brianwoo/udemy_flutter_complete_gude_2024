@@ -27,29 +27,35 @@ class PlacesScreen extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
-        child: places.isNotEmpty
-            ? ListView.builder(
-                itemCount: places.length,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: places.when(
+            data: (listData) {
+              return ListView.builder(
+                itemCount: listData.length,
                 itemBuilder: (context, index) {
+                  final place = listData[index];
                   return ListTile(
-                    key: ValueKey(places[index].id),
+                    key: ValueKey(place.id),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            PlaceDetailsScreen(place: places[index]),
+                        builder: (context) => PlaceDetailsScreen(place: place),
                       ));
                     },
-                    title: Text(places[index].title),
+                    leading: CircleAvatar(
+                      radius: 26,
+                      backgroundImage: FileImage(place.image),
+                    ),
+                    title: Text(place.title),
+                    subtitle: Text(place.placeLocation.address),
                   );
                 },
-              )
-            : Center(
-                child: Text(
-                  'No Places added yet',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                ),
-              ),
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, st) => Center(child: Text(e.toString())),
+          ),
+        ),
       ),
     );
   }
